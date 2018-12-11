@@ -137,3 +137,116 @@ $(function() {
     });
 
 });
+
+/*Page 26 grading stars*/
+$(document).ready(function(){
+
+  /* 1. Visualizing things on Hover - See next part for action on click */
+  $('#stars li').on('mouseover', function(){
+    var onStar = parseInt($(this).data('value'), 10); // The star currently mouse on
+
+    // Now highlight all the stars that's not after the current hovered star
+    $(this).parent().children('li.star').each(function(e){
+      if (e < onStar) {
+        $(this).addClass('hover');
+      }
+      else {
+        $(this).removeClass('hover');
+      }
+    });
+
+  }).on('mouseout', function(){
+    $(this).parent().children('li.star').each(function(e){
+      $(this).removeClass('hover');
+    });
+  });
+
+
+  /* 2. Action to perform on click */
+  $('#stars li').on('click', function(){
+    var onStar = parseInt($(this).data('value'), 10); // The star currently selected
+    var stars = $(this).parent().children('li.star');
+
+    for (i = 0; i < stars.length; i++) {
+      $(stars[i]).removeClass('selected');
+    }
+
+    for (i = 0; i < onStar; i++) {
+      $(stars[i]).addClass('selected');
+    }
+
+    // JUST RESPONSE (Not needed)
+    var ratingValue = parseInt($('#stars li.selected').last().data('value'), 10);
+    var msg = "";
+    if (ratingValue > 1) {
+        msg = "Thanks! You rated this " + ratingValue + " stars.";
+    }
+    else {
+        msg = "We will improve ourselves. You rated this " + ratingValue + " stars.";
+    }
+    responseMessage(msg);
+
+  });
+
+
+});
+
+
+function responseMessage(msg) {
+  $('.success-box').fadeIn(200);
+  $('.success-box div.text-message').html("<span>" + msg + "</span>");
+}
+
+
+
+/*MAP MARKERS*/
+
+function initMap() {
+  var center = {lat: 40.015934, lng: -75.192855};
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 15,
+    center: center
+  });
+  var marker = new google.maps.Marker({
+    position: center,
+    map: map
+  });
+}
+
+
+var='Park Heights'
+var='Alden Park'
+var='Falls Village'
+var='Jefferson University'
+var='Your Location'
+
+
+
+var locations = [
+	['Park Heights',  40.027770,  -75.182645],
+	['Alden Park',  40.027192, -75.184053],
+	['Falls Village', 40.025502, -75.186023],
+	['Jefferson University', 40.018902, -75.192513]
+	['Your Location', 40.027055, -75.182741]
+];
+
+...
+
+var infowindow =  new google.maps.InfoWindow({});
+var marker, count;
+for (count = 0; count < locations.length; count++) {
+    marker = new google.maps.Marker({
+      position: new google.maps.LatLng(locations[count][1], locations[count][2]),
+      map: map,
+      title: locations[count][0]
+    });
+google.maps.event.addListener(marker, 'click', (function (marker, count) {
+      return function () {
+        infowindow.setContent(locations[count][0]);
+        infowindow.open(map, marker);
+      }
+    })(marker, count));
+  }
+
+
+  
